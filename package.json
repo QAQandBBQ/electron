@@ -1,0 +1,14 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "main": "src/main/index.js",
+  "repository": "git@github.com:QAQandBBQ/electron.git",
+  "author": "何勇 <heyong02530@51shebao.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^24.1.2"
+  }
+}
