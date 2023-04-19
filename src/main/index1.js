@@ -4,7 +4,7 @@ const path = require("path");
 let mainWindow;
 
 // 设置协议
-const protocol = "zhufeng";
+const protocol = "juejin";
 const scheme = `${protocol}://`;
 app.setAsDefaultProtocolClient(protocol);
 
@@ -31,15 +31,13 @@ app.whenReady().then(() => {
 });
 
 function createWindow() {
-  const { url = "http://www.javascriptpeixun.cn/my/courses/learning" } =
-    urlParams;
-  const width = 800;
-  const height = 600;
+  const width = parseInt(urlParams.width) || 800;
+  const height = parseInt(urlParams.height) || 600;
   if (mainWindow) {
-    mainWindow.loadURL(url);
+    mainWindow.setSize(width, height);
   } else {
     mainWindow = new BrowserWindow({ width, height });
-    mainWindow.loadURL(url);
+    mainWindow.loadURL("https://juejin.cn");
     // mainWindow.webContents.openDevTools();
   }
 }
