@@ -1,67 +1,30 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
-let mainWindow;
-
-// 设置协议
-const protocol = "zhufeng";
-const scheme = `${protocol}://`;
-app.setAsDefaultProtocolClient(protocol);
-
-let urlParams = {};
-
-handleSchemeWakeUp(process.argv);
-
-const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  app.quit();
-} else {
-  // 如果是多次点击应用程序 需要显示主程序，并放置在最上层
-  app.on("second-instance", (event, argv) => {
-    mainWindow.restore();
-    mainWindow.show();
-    handleSchemeWakeUp(argv);
-  });
-}
-
-app.on("open-url", (event, url) => handleSchemeWakeUp(url));
-
-app.whenReady().then(() => {
-  createWindow();
-});
+let mainWindow = null;
 
 function createWindow() {
-  const { url = "http://www.javascriptpeixun.cn/my/courses/learning" } =
-    urlParams;
-  const width = 800;
-  const height = 600;
-  if (mainWindow) {
-    mainWindow.loadURL(url);
+  if (!mainWindow) {
+    const options = {
+      width: 800,
+      height: 600,
+      titleBarStyle: "hiddenInset",
+      // web端偏好即相关配置
+      webPreferences: {
+        // nodeIntegration: true, // 再web端开启nodejs环境集成
+        contextIsolation: true, // 关闭上下文隔离 默认是开启隔离 preload.js 脚本和 index.html 是否共享相同的 document 和 window 对象
+        // 官方不推荐暴力web端的node能力，提供了preload的能力没在preload文件下的js才有node能力
+        nodeIntegration: false,
+        sandbox: false,
+        preload: path.join(__dirname, "../preload/index.js"),
+      },
+    };
+    mainWindow = new BrowserWindow(options);
+    mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
+
+    mainWindow.webContents.openDevTools();
   } else {
-    mainWindow = new BrowserWindow({ width, height });
-    mainWindow.loadURL(url);
-    // mainWindow.webContents.openDevTools();
   }
 }
 
-// TODO: 分屏的时候没有定位到应用
-function handleSchemeWakeUp(argv) {
-  // mac 是支持scheme协议的
-  const url = [].concat(argv).find((v) => v.startsWith(scheme));
-  if (!url) return;
-
-  const searchParams = new URLSearchParams(url.slice(scheme.length));
-  urlParams = Object.fromEntries(searchParams.entries());
-  console.log(urlParams, searchParams, searchParams.entries(), "searchParams");
-  if (app.isReady()) createWindow();
-}
-
-// app.whenReady().then(() => {
-//   win = new BrowserWindow({
-//     width: 800,
-//     height: 600,
-//     titleBarStyle: "hiddenInset",
-//   });
-//   win.webContents.openDevTools();
-//   win.loadFile(path.join(__dirname, "../renderer/index.html"));
-// });
+app.whenReady().then(createWindow);
