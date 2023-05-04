@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<style>
+  body {
+    padding: 40px 20px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: black;
+      color: white;
+    }
+  }
+</style>
+
+<body>
+  <p id="isDarkMode">当前系统是采用暗黑模式：</p>
+  <button onclick="myAPI.setTheme('light')">设置浅色</button>
+  <button onclick="myAPI.setTheme('dark')">设置深色</button>
+  <iframe title="百度" src="https://home.101hr.com/"></iframe>
+  <iframe title="逼乎" src="https://baoxian.101hr.com/"></iframe>
+  <!-- <button onclick="myAPI.sendMsg('light')">设置浅色</button>
+  <button onclick="myAPI.sendMsg('dark')">设置深色</button> -->
+</body>
+<script src="./index.js"></script>
+
+</html>

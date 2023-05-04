@@ -8,28 +8,13 @@
   <title>Document</title>
 </head>
 
-<style>
-  body {
-    padding: 40px 20px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: black;
-      color: white;
-    }
-  }
-</style>
-
 <body>
-  <p id="isDarkMode">当前系统是采用暗黑模式：</p>
-  <button onclick="myAPI.setTheme('light')">设置浅色</button>
-  <button onclick="myAPI.setTheme('dark')">设置深色</button>
-  <iframe title="百度" src="https://home.101hr.com/"></iframe>
-  <iframe title="逼乎" src="https://baoxian.101hr.com/"></iframe>
-  <!-- <button onclick="myAPI.sendMsg('light')">设置浅色</button>
-  <button onclick="myAPI.sendMsg('dark')">设置深色</button> -->
+  <div>
+    <button id="close">关闭</button>
+    <button id="pack">收起</button>
+    <button id="change">最大/小化</button>
+  </div>
+  <div style="padding: 40px;">自定义交通信号灯</div>
 </body>
-<script src="./index.js"></script>
 
 </html>
