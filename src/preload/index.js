@@ -1,19 +1,28 @@
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, contextBridge } = require("electron");
+
+// 设置window全局变量
+contextBridge.exposeInMainWorld("preload", {
+  // 点击弹出弹窗
+  popupMenu: () => {
+    console.log("popupMenu");
+    const callbackMap = {
+      bold: () => {
+        console.log("ipcRender bold");
+      },
+      color: () => {
+        console.log("ipcRender color");
+      },
+    };
+    ipcRenderer.invoke("installMenuPopup", 12);
+  },
+});
 
 document.addEventListener("DOMContentLoaded", () => {
-  const close = document.querySelector("#close");
-  const pack = document.querySelector("#pack");
-  const change = document.querySelector("#change");
-  close.onclick = function () {
-    ipcRenderer.invoke("closeWindow");
-  };
-  // 最小化 - 全屏时，最小化不会生效
-  pack.onclick = function () {
-    ipcRenderer.invoke("minimize");
-  };
-  // 全屏
-  change.onclick = function () {
-    console.log("最大化/还原");
-    ipcRenderer.invoke("maximize");
-  };
+  const btn = document.querySelector("#btn");
+  ipcRenderer.on("bold", () => {
+    btn.style["font-weight"] = "bold";
+  });
+  ipcRenderer.on("color", () => {
+    btn.style["color"] = "red";
+  });
 });
