@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Menu, Tray } = require("electron");
 const path = require("path");
-const { tpl, ownTpl } = require("../config/menu.js");
+const { tpl, ownTpl, trayMenu } = require("../config/menu.js");
+const fs = require("fs");
 
 let win = null;
 
@@ -27,11 +28,11 @@ function createWindow(params) {
 }
 
 app.whenReady().then(() => {
-  onTray();
   createWindow();
-  createDockMenu();
+  onTray();
+  // createDockMenu();
 
-  installMenuPopup();
+  // installMenuPopup();
 });
 
 function _popupMenu() {
@@ -48,11 +49,31 @@ function _popupMenu() {
 // 托盘操作
 function onTray() {
   const tray = new Tray(path.join(__dirname, "icon.png"));
-  const contextMenu = Menu.buildFromTemplate(tpl);
+  const contextMenu = Menu.buildFromTemplate(trayMenu);
   tray.setToolTip("This is hary application~");
   tray.setContextMenu(contextMenu);
-  tray.on("click", () => {
-    console.log("tray clicked");
+
+  // 2s之后，自动弹出托盘菜单
+  setTimeout(() => {
+    const popUpMenu = Menu.buildFromTemplate(trayMenu.slice(1));
+    tray.popUpContextMenu(popUpMenu);
+  }, 2000);
+  // 托盘事件
+  // tray.on("click", () => {
+  //   console.log("tray clicked");
+  // });
+  tray.on("drop-files", (event, files) => {
+    const [file] = files || [];
+    if (file && win) {
+      // const result = fs.readFileSync(file);
+      // console.log(result, "==");
+      const newWin = new BrowserWindow({
+        width: 600,
+        height: 500,
+      });
+      newWin.loadFile(file);
+    }
+    console.log(files, "tray drop-files");
   });
 }
 

@@ -76,7 +76,45 @@ const ownTpl = [
   },
 ];
 
+/**
+ * 托盘菜单
+ */
+const trayMenu = [
+  {
+    label: "关于",
+    role: "about",
+  },
+  { type: "separator" },
+  {
+    label: "菜单2",
+    click: () => {
+      console.log("点击了菜单2");
+    },
+  },
+  {
+    label: "子菜单",
+    submenu: [
+      {
+        label: "显示窗口",
+        click: () => {
+          console.log("点击了二级菜单");
+        },
+      },
+      {
+        label: "打开控制台",
+        role: "toggleDevTools",
+      },
+    ],
+  },
+  { type: "separator" },
+  {
+    label: "退出",
+    role: "quit",
+  },
+];
+
 module.exports = {
   tpl,
   ownTpl,
+  trayMenu,
 };
