@@ -5,4 +5,8 @@ contextBridge.exposeInMainWorld("preload", {
     ipcRenderer.invoke("setTitle", title);
     console.log(title, "**setTitle**");
   },
+  save: (content) => {
+    ipcRenderer.invoke("saveFile", content);
+    console.log(content, "==content==");
+  },
 });

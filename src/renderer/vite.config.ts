@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
+import VueJsx from '@vitejs/plugin-vue-jsx'
 import Pages from 'vite-plugin-pages'
 import generateSitemap from 'vite-ssg-sitemap'
 import Layouts from 'vite-plugin-vue-layouts'
@@ -40,6 +41,7 @@ export default defineConfig({
         }),
       },
     }),
+    VueJsx(),
 
     // https://github.com/hannoeru/vite-plugin-pages
     Pages({
