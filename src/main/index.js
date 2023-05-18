@@ -1,16 +1,39 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  dialog,
+  globalShortcut,
+} = require("electron");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
+const localShortcut = require("electron-localshortcut");
 
 let mainWindow;
 
 app.whenReady().then(() => {
   createWindow();
+  // createWindow1();
 
   ipcMain.handle("setTitle", setTitle);
   ipcMain.handle("saveFile", saveFile);
 });
+
+let win1, win2;
+function createWindow1() {
+  win1 = new BrowserWindow({ width: 600, height: 400 });
+  win1.loadURL("https://www.baidu.com");
+  localShortcut.register(win1, "Ctrl+Shift+K", () => {
+    console.log("register local shortcut for win1");
+  });
+
+  win2 = new BrowserWindow({ width: 600, height: 400 });
+  win2.loadURL("https://www.taobao.com");
+  localShortcut.register(win2, "Ctrl+Shift+T", () => {
+    console.log("register local shortcut for win2");
+  });
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -25,6 +48,8 @@ function createWindow() {
   mainWindow.loadURL("http://127.0.0.1:8080/");
   // mainWindow.loadFile(path.join(__dirname, './index.html'))
   mainWindow.webContents.openDevTools({ mode: "bottom" });
+
+  createGlobalShortcut();
   return;
   setTimeout(() => {
     // 返回 promise，会 resolve 一个对象，包含：
@@ -64,6 +89,51 @@ function createWindow() {
   }, 2000);
 }
 
+/**
+ * 快捷键
+ */
+function createGlobalShortcut() {
+  // registerGlobalShortcut("Cmd+f");
+  localShortcut.register(mainWindow, "Cmd+B", () => {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    } else {
+      mainWindow.minimize();
+    }
+    console.log(
+      mainWindow.isMinimized(),
+      "*******register local shortcut for win2****************"
+    );
+  });
+  // registerGlobalShortcut("Cmd+A", () => {
+  //   if (mainWindow.isMinimized()) {
+  //     mainWindow.restore();
+  //   } else {
+  //     mainWindow.minimize();
+  //   }
+  //   console.log(
+  //     mainWindow.isMinimized(),
+  //     "*******register local shortcut for win2****************"
+  //   );
+  // });
+}
+
+function registerGlobalShortcut(shortcut, callback) {
+  if (!shortcut) return false;
+  let flag = false;
+  try {
+    flag = globalShortcut.isRegistered(shortcut);
+    if (flag) return true;
+    flag = globalShortcut.register(shortcut, () => {
+      callback && callback()
+      console.log("toggle shortcut");
+    });
+  } catch (e) {
+    console.error(e);
+  }
+  return flag;
+}
+
 function setTitle(event, title) {
   console.log(title, "title");
   if (mainWindow && title) {
@@ -101,7 +171,7 @@ function saveFileToPath(filePath, content) {
   //   console.log(filePath)
   //   console.log(`Path does not exist. Saving file to ${filePath}`);
   // }
-  console.log(filePath)
+  console.log(filePath);
 
   // 将文件写入到指定路径文件中
   fs.writeFileSync(filePath, content, "utf-8");
